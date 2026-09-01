@@ -1,0 +1,168 @@
+@import "tailwindcss";
+
+@theme {
+  --color-void: #060607;
+  --color-ink: #0b0b0d;
+  --color-steel: #16161a;
+  --color-ash: #86868c;
+  --color-acid: #c6ff3d;
+
+  --font-display: "Clash Display", "Space Grotesk", "Helvetica Neue", Arial,
+    sans-serif;
+  --font-body: "Space Grotesk", "Helvetica Neue", Arial, sans-serif;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@layer base {
+  html {
+    background-color: var(--color-void);
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    margin: 0;
+    overflow-x: hidden;
+    background-color: var(--color-void);
+    color: #f4f4f5;
+    font-family: var(--font-body);
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* The custom cursor replaces the native one on precise pointers only. */
+  @media (pointer: fine) {
+    body.has-custom-cursor,
+    body.has-custom-cursor * {
+      cursor: none !important;
+    }
+  }
+
+  /* Scrollbar is hidden on purpose: the page is filmed as a screencast and the
+     ProgressRail component acts as the visible scroll indicator. */
+  ::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+  }
+
+  html {
+    scrollbar-width: none;
+  }
+
+  ::selection {
+    background: var(--color-acid);
+    color: #000;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    line-height: 0.85;
+    margin: 0;
+    text-wrap: balance;
+  }
+
+  img {
+    display: block;
+    max-width: 100%;
+  }
+}
+
+@utility text-display {
+  font-family: var(--font-display);
+  letter-spacing: -0.035em;
+  line-height: 0.82;
+}
+
+/* Small caps label used across every section header. */
+@utility label {
+  font-size: 0.68rem;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  color: var(--color-ash);
+}
+
+@utility tabular {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+}
+
+/* Film grain: one fixed layer over the whole page. */
+.grain-layer {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+}
+
+@keyframes grain-shift {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  20% {
+    transform: translate3d(-6%, 3%, 0);
+  }
+  40% {
+    transform: translate3d(4%, -5%, 0);
+  }
+  60% {
+    transform: translate3d(-3%, -2%, 0);
+  }
+  80% {
+    transform: translate3d(5%, 4%, 0);
+  }
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.grain-anim {
+  animation: grain-shift 6s steps(5, end) infinite;
+}
+
+@keyframes breathe {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 0.55;
+  }
+  50% {
+    transform: translateY(6px) scale(1.06);
+    opacity: 1;
+  }
+}
+
+.breathe {
+  animation: breathe 3.4s var(--ease-out-expo) infinite;
+}
+
+@keyframes sweep {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(400%);
+  }
+}
+
+.sweep {
+  animation: sweep 5s linear infinite;
+}
+
+/* Deep sections stay cheap to paint until they are close to the viewport. */
+.cv-auto {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 100vh;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
