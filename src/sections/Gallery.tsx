@@ -119,7 +119,7 @@ function Spotlight() {
   const my = useSpring(0, { stiffness: 420, damping: 40, mass: 0.4 })
   const radius = useSpring(0, { stiffness: 200, damping: 28 })
 
-  const mask = useMotionTemplate`radial-gradient(${radius}px circle at ${mx}px ${my}px, #000 0%, #000 62%, transparent 100%)`
+  const mask = useMotionTemplate`radial-gradient(circle ${radius}px at ${mx}px ${my}px, #000 0%, #000 62%, transparent 100%)`
 
   return (
     <div className="mt-[16vh]">
@@ -155,6 +155,8 @@ function Spotlight() {
         />
         <motion.div
           style={{ maskImage: mask, WebkitMaskImage: mask }}
+          animate={{ opacity: active ? 1 : 0 }}
+          transition={{ duration: 0.35 }}
           className="absolute inset-0"
         >
           <img

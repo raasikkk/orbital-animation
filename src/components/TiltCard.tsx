@@ -24,7 +24,7 @@ export function TiltCard({ icon: Icon, title, body, meta }: Props) {
       <motion.div
         aria-hidden
         style={{ backgroundImage: glow }}
-        className="pointer-events-none absolute inset-0"
+        className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
       />
       <div
         aria-hidden

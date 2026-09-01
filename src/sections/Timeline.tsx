@@ -97,7 +97,7 @@ function Phase({
           backgroundColor: inView ? '#c6ff3d' : '#2a2a2e',
         }}
         transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-        className="absolute top-[8vh] -left-[5px] block h-[11px] w-[11px] rounded-full"
+        className="absolute top-[8vh] -left-[calc(2rem+5px)] block h-[11px] w-[11px] rounded-full lg:-left-[calc(3rem+5px)]"
       />
       <motion.div
         animate={

@@ -57,7 +57,7 @@ export function Capabilities() {
           style={{ x }}
           className="mt-10 flex w-max gap-6 px-5 will-change-transform md:px-9"
         >
-          <div className="flex h-[62vh] w-[min(72vw,380px)] shrink-0 flex-col justify-end pr-6">
+          <div className="flex h-[62vh] w-[min(72vw,380px)] shrink-0 flex-col justify-end pr-12">
             <h2 className="text-display text-[clamp(2.4rem,5.6vw,4.6rem)] text-white">
               Five systems,
               <br />
