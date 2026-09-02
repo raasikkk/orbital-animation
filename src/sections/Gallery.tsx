@@ -1,47 +1,41 @@
-import {
-  motion,
-  useMotionTemplate,
-  useMotionValue,
-  useScroll,
-  useSpring,
-  useTransform,
-} from 'motion/react'
-import { useRef, useState } from 'react'
+import { motion, useMotionTemplate, useMotionValue, useScroll, useTransform } from 'motion/react'
+import { useRef } from 'react'
 import { gallery, spotlightShot, type Shot } from '../data/images'
 
 const PLACEMENT = [
-  'col-span-12 lg:col-span-7 lg:col-start-1',
-  'col-span-12 sm:col-span-6 lg:col-span-4 lg:col-start-9 lg:-mt-[18vh]',
-  'col-span-12 sm:col-span-6 lg:col-span-4 lg:col-start-2 lg:mt-[6vh]',
-  'col-span-12 sm:col-span-6 lg:col-span-5 lg:col-start-7 lg:mt-[10vh]',
-  'col-span-12 lg:col-span-10 lg:col-start-2 lg:mt-[8vh]',
-  'col-span-12 sm:col-span-8 lg:col-span-4 lg:col-start-8 lg:-mt-[6vh]',
+  'col-span-12 lg:col-span-6 lg:col-start-1',
+  'col-span-12 sm:col-span-6 lg:col-span-4 lg:col-start-9 lg:-mt-[20vh]',
+  'col-span-12 sm:col-span-6 lg:col-span-3 lg:col-start-2 lg:mt-[8vh]',
+  'col-span-12 sm:col-span-6 lg:col-span-5 lg:col-start-7 lg:mt-[12vh]',
+  'col-span-12 lg:col-span-9 lg:col-start-3 lg:mt-[10vh]',
+  'col-span-12 sm:col-span-8 lg:col-span-4 lg:col-start-8 lg:-mt-[4vh]',
 ]
 
 export function Gallery() {
   return (
-    <section id="field" className="cv-auto relative px-5 py-[16vh] md:px-9">
-      <div className="mx-auto max-w-[1500px]">
-        <div className="flex items-baseline gap-6">
-          <span className="label">03 — Field record</span>
-          <span className="h-px flex-1 bg-white/12" />
+    <section id="field" className="cv-auto relative pt-[20vh]">
+      <div className="px-6 md:px-10">
+        <div className="mx-auto max-w-[1500px]">
+          <div className="flex items-baseline gap-8">
+            <span className="label">003 — Field record</span>
+            <span className="h-px flex-1 bg-bone/12" />
+          </div>
+
+          <h2 className="text-display mt-16 max-w-[14ch] text-[clamp(2.4rem,6.4vw,5.6rem)] text-bone">
+            What the array sees.
+          </h2>
+
+          <div className="mt-[16vh] grid grid-cols-12 gap-8">
+            {gallery.map((shot, i) => (
+              <div key={shot.index} className={PLACEMENT[i % PLACEMENT.length]}>
+                <RevealShot shot={shot} />
+              </div>
+            ))}
+          </div>
         </div>
-
-        <h2 className="text-display mt-10 max-w-[14ch] text-[clamp(2.6rem,7vw,6.4rem)] text-white">
-          What the array
-          <span className="text-acid"> sees.</span>
-        </h2>
-
-        <div className="mt-[12vh] grid grid-cols-12 gap-6">
-          {gallery.map((shot, i) => (
-            <div key={shot.index} className={PLACEMENT[i % PLACEMENT.length]}>
-              <RevealShot shot={shot} />
-            </div>
-          ))}
-        </div>
-
-        <Spotlight />
       </div>
+
+      <Plate />
     </section>
   )
 }
@@ -52,7 +46,7 @@ function RevealShot({ shot }: { shot: Shot }) {
 
   const { scrollYProgress: open } = useScroll({
     target: ref,
-    offset: ['start 0.95', 'start 0.28'],
+    offset: ['start 0.95', 'start 0.3'],
   })
   const { scrollYProgress: drift } = useScroll({
     target: ref,
@@ -69,109 +63,77 @@ function RevealShot({ shot }: { shot: Shot }) {
   const left = reveal === 'right' ? p : reveal === 'center' ? half : zero
   const right = reveal === 'left' ? p : reveal === 'center' ? half : zero
 
-  const clipPath = useMotionTemplate`inset(${top}% ${right}% ${bottom}% ${left}% round 20px)`
-  const scale = useTransform(open, [0, 1], [1.38, 1.02])
-  const y = useTransform(drift, [0, 1], ['-6%', '6%'])
-  const captionX = useTransform(open, [0.4, 1], [-24, 0])
-  const captionO = useTransform(open, [0.5, 1], [0, 1])
+  const clipPath = useMotionTemplate`inset(${top}% ${right}% ${bottom}% ${left}%)`
+  const scale = useTransform(open, [0, 1], [1.32, 1.02])
+  const y = useTransform(drift, [0, 1], ['-5%', '5%'])
+  const captionO = useTransform(open, [0.55, 1], [0, 1])
 
   return (
-    <figure
-      ref={ref}
-      className="relative"
-      data-cursor="view"
-      data-cursor-label="view"
-    >
+    <figure ref={ref} className="relative">
       <motion.div
         style={{ clipPath, aspectRatio: shot.aspect }}
-        className="relative w-full overflow-hidden bg-steel"
+        className="relative w-full overflow-hidden bg-ink"
       >
         <motion.img
           src={shot.src}
           alt={shot.alt}
           loading="lazy"
           style={{ scale, y }}
-          className="h-full w-full object-cover grayscale-[0.75] transition-[filter] duration-700 hover:grayscale-0"
+          className="h-full w-full object-cover grayscale"
         />
-        <span className="pointer-events-none absolute inset-0 bg-gradient-to-t from-void/60 via-transparent to-transparent" />
       </motion.div>
 
       <motion.figcaption
-        style={{ x: captionX, opacity: captionO }}
-        className="mt-4 flex items-baseline justify-between gap-4"
+        style={{ opacity: captionO }}
+        className="mt-5 flex items-baseline justify-between gap-4"
       >
-        <span className="text-[13px] tracking-[0.12em] text-white">
+        <span className="text-[13px] tracking-[0.06em] text-ash">
           {shot.caption}
         </span>
-        <span className="tabular text-[11px] tracking-[0.3em] text-acid">
-          {shot.index}
-        </span>
+        <span className="tabular label">{shot.index}</span>
       </motion.figcaption>
     </figure>
   )
 }
 
-/** Colour lives only inside the cursor. Move the mouse and the sky comes back. */
-function Spotlight() {
-  const [active, setActive] = useState(false)
+/**
+ * Full-bleed plate that opens from a letterbox slit to the full frame as it
+ * crosses the viewport — the one big moment of the page, driven purely by scroll.
+ */
+function Plate() {
+  const ref = useRef<HTMLDivElement>(null)
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ['start end', 'end start'],
+  })
 
-  const mx = useSpring(0, { stiffness: 420, damping: 40, mass: 0.4 })
-  const my = useSpring(0, { stiffness: 420, damping: 40, mass: 0.4 })
-  const radius = useSpring(0, { stiffness: 200, damping: 28 })
-
-  const mask = useMotionTemplate`radial-gradient(circle ${radius}px at ${mx}px ${my}px, #000 0%, #000 62%, transparent 100%)`
+  const inset = useTransform(scrollYProgress, [0.05, 0.5], [42, 0], {
+    clamp: true,
+  })
+  const clipPath = useMotionTemplate`inset(${inset}% 0% ${inset}% 0%)`
+  const scale = useTransform(scrollYProgress, [0, 1], [1.25, 1.05])
+  const captionO = useTransform(scrollYProgress, [0.42, 0.58], [0, 1])
 
   return (
-    <div className="mt-[16vh]">
-      <div className="flex items-baseline gap-6">
-        <span className="label">Live composite</span>
-        <span className="h-px flex-1 bg-white/12" />
-        <span className="label">Move the cursor</span>
-      </div>
-
-      <div
-        data-cursor="drag"
-        data-cursor-label="reveal"
-        onPointerMove={(e) => {
-          const r = e.currentTarget.getBoundingClientRect()
-          mx.set(e.clientX - r.left)
-          my.set(e.clientY - r.top)
-          if (!active) {
-            setActive(true)
-            radius.set(260)
-          }
-        }}
-        onPointerLeave={() => {
-          setActive(false)
-          radius.set(0)
-        }}
-        className="relative mt-8 aspect-[21/9] w-full overflow-hidden rounded-[22px] bg-black"
-      >
-        <img
+    <div ref={ref} className="relative mt-[20vh] h-[100svh] w-full overflow-hidden">
+      <motion.div style={{ clipPath }} className="absolute inset-0">
+        <motion.img
           src={spotlightShot.src}
           alt={spotlightShot.alt}
           loading="lazy"
-          className="absolute inset-0 h-full w-full object-cover opacity-35 grayscale"
+          style={{ scale }}
+          className="h-full w-full object-cover opacity-80 grayscale"
         />
-        <motion.div
-          style={{ maskImage: mask, WebkitMaskImage: mask }}
-          animate={{ opacity: active ? 1 : 0 }}
-          transition={{ duration: 0.35 }}
-          className="absolute inset-0"
-        >
-          <img
-            src={spotlightShot.src}
-            alt=""
-            aria-hidden
-            loading="lazy"
-            className="h-full w-full scale-105 object-cover"
-          />
-        </motion.div>
+        <div className="absolute inset-0 bg-gradient-to-t from-void/70 via-transparent to-void/40" />
+      </motion.div>
 
-        <span className="pointer-events-none absolute bottom-6 left-6 text-[11px] tracking-[0.3em] text-white/70 uppercase">
-          {spotlightShot.caption}
-        </span>
-      </div>
+      <motion.div
+        style={{ opacity: captionO }}
+        className="absolute right-6 bottom-10 left-6 flex items-baseline justify-between md:right-10 md:left-10"
+      >
+        <span className="label">{spotlightShot.caption}</span>
+        <span className="label">Composite / 2031</span>
+      </motion.div>
     </div>
   )
 }

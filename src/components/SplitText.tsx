@@ -4,37 +4,31 @@ import { riseIn, stagger } from '../lib/motionPresets'
 type Props = {
   text: string
   className?: string
-  wordClassName?: string
-  /** Seconds between characters. */
   charStagger?: number
   wordStagger?: number
   delay?: number
   /** Play on mount instead of waiting for the viewport. */
   immediate?: boolean
-  once?: boolean
   variants?: Variants
 }
 
 /**
- * Per-character reveal: each word is a masked box, each character rises out of
- * it and comes into focus. Nested staggers give words *and* letters their own
- * rhythm, which reads far better on video than a single flat stagger.
+ * Per-character reveal: each word is a mask, each character rises out of it and
+ * comes into focus. Nested staggers give words and letters their own rhythm.
  */
 export function SplitText({
   text,
   className = '',
-  wordClassName = '',
-  charStagger = 0.028,
-  wordStagger = 0.075,
+  charStagger = 0.022,
+  wordStagger = 0.07,
   delay = 0,
   immediate = false,
-  once = true,
   variants = riseIn,
 }: Props) {
   const words = text.split(' ')
-  const animateProps = immediate
+  const play = immediate
     ? { animate: 'show' as const }
-    : { whileInView: 'show' as const, viewport: { once, amount: 0.4 } }
+    : { whileInView: 'show' as const, viewport: { once: true, amount: 0.4 } }
 
   return (
     <span
@@ -47,13 +41,13 @@ export function SplitText({
         className="inline-flex flex-wrap"
         variants={stagger(wordStagger, delay)}
         initial="hidden"
-        {...animateProps}
+        {...play}
       >
         {words.map((word, w) => (
           <motion.span
             key={`${word}-${w}`}
             variants={stagger(charStagger)}
-            className={`relative inline-flex overflow-hidden pb-[0.14em] ${wordClassName}`}
+            className="relative inline-flex overflow-hidden pb-[0.14em]"
           >
             {Array.from(word).map((char, c) => (
               <motion.span
@@ -64,9 +58,7 @@ export function SplitText({
                 {char}
               </motion.span>
             ))}
-            {w < words.length - 1 && (
-              <span className="inline-block">&nbsp;</span>
-            )}
+            {w < words.length - 1 && <span className="inline-block">&nbsp;</span>}
           </motion.span>
         ))}
       </motion.span>

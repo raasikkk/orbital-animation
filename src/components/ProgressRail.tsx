@@ -1,42 +1,20 @@
-import { motion, useScroll, useSpring, useTransform } from 'motion/react'
+import { motion, useScroll, useSpring } from 'motion/react'
 
-const MARKS = ['HERO', 'CONCEPT', 'SYSTEMS', 'FIELD', 'TIMELINE', 'CONTACT']
-
-/** Right-hand scroll rail — replaces the hidden native scrollbar. */
+/** Hairline scroll indicator on the right — stands in for the hidden scrollbar. */
 export function ProgressRail() {
   const { scrollYProgress } = useScroll()
   const progress = useSpring(scrollYProgress, {
-    stiffness: 180,
+    stiffness: 160,
     damping: 34,
     mass: 0.4,
   })
-  const percent = useTransform(progress, (v) =>
-    String(Math.round(v * 100)).padStart(3, '0'),
-  )
 
   return (
-    <div className="pointer-events-none fixed top-1/2 right-5 z-50 hidden -translate-y-1/2 flex-col items-end gap-4 md:flex">
-      <motion.span className="tabular text-[10px] tracking-[0.3em] text-ash">
-        {percent}
-      </motion.span>
-
-      <div className="relative h-[38vh] w-px bg-white/12">
-        <motion.div
-          className="absolute inset-x-0 top-0 origin-top bg-acid"
-          style={{ height: '100%', scaleY: progress }}
-        />
-        {MARKS.map((_, i) => (
-          <span
-            key={i}
-            className="absolute -left-[3px] h-px w-[7px] bg-white/25"
-            style={{ top: `${(i / (MARKS.length - 1)) * 100}%` }}
-          />
-        ))}
-      </div>
-
-      <span className="[writing-mode:vertical-rl] text-[9px] tracking-[0.4em] text-ash/70 uppercase">
-        scroll
-      </span>
+    <div className="pointer-events-none fixed top-1/2 right-8 z-40 hidden h-[26vh] w-px -translate-y-1/2 bg-bone/12 md:block">
+      <motion.div
+        className="absolute inset-x-0 top-0 h-full origin-top bg-bone/70"
+        style={{ scaleY: progress }}
+      />
     </div>
   )
 }

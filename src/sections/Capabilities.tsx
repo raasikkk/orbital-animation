@@ -1,15 +1,13 @@
 import { Cpu, Orbit, Radar, Satellite, Waves, type LucideIcon } from 'lucide-react'
 import { motion, useScroll, useTransform } from 'motion/react'
 import { useEffect, useRef, useState } from 'react'
-import { TiltCard } from '../components/TiltCard'
 import { capabilities } from '../data/content'
 
 const ICONS: Record<string, LucideIcon> = { Satellite, Cpu, Radar, Orbit, Waves }
 
 /**
  * Sticky horizontal scroller. The section is as tall as the track is wide, so
- * vertical scroll maps 1:1 onto horizontal travel — no pinning plugin needed,
- * which keeps it stable under React StrictMode and Lenis.
+ * vertical scroll maps 1:1 onto horizontal travel — pure scroll, no dragging.
  */
 export function Capabilities() {
   const sectionRef = useRef<HTMLElement>(null)
@@ -46,51 +44,64 @@ export function Capabilities() {
       style={{ height: `calc(100svh + ${distance}px)` }}
     >
       <div className="sticky top-0 flex h-[100svh] flex-col justify-center overflow-hidden">
-        <div className="flex items-baseline gap-6 px-5 md:px-9">
-          <span className="label">02 — Systems</span>
-          <span className="h-px flex-1 bg-white/12" />
-          <span className="label hidden md:block">Scroll to travel</span>
+        <div className="flex items-baseline gap-8 px-6 md:px-10">
+          <span className="label">002 — Systems</span>
+          <span className="h-px flex-1 bg-bone/12" />
         </div>
 
         <motion.div
           ref={trackRef}
           style={{ x }}
-          className="mt-10 flex w-max gap-6 px-5 will-change-transform md:px-9"
+          className="mt-16 flex w-max items-stretch will-change-transform"
         >
-          <div className="flex h-[62vh] w-[min(72vw,380px)] shrink-0 flex-col justify-end pr-12">
-            <h2 className="text-display text-[clamp(2.4rem,5.6vw,4.6rem)] text-white">
+          <div className="flex w-[min(80vw,460px)] shrink-0 flex-col justify-end px-6 pb-2 md:px-10">
+            <h2 className="text-display text-[clamp(2rem,4.6vw,3.8rem)] text-bone">
               Five systems,
               <br />
-              <span className="text-acid">one instrument.</span>
+              <span className="text-ash">one instrument.</span>
             </h2>
-            <p className="mt-6 max-w-[30ch] text-[15px] leading-relaxed text-ash">
+            <p className="mt-8 max-w-[32ch] leading-relaxed text-ash">
               Everything on board was rebuilt from the vacuum up. Nothing here
               was adapted from a ground product.
             </p>
           </div>
 
-          {capabilities.map((c) => (
-            <TiltCard
-              key={c.id}
-              icon={ICONS[c.icon]}
-              title={c.title}
-              body={c.body}
-              meta={c.meta}
-            />
-          ))}
+          {capabilities.map((c) => {
+            const Icon = ICONS[c.icon]
+            return (
+              <article
+                key={c.id}
+                className="flex h-[52vh] w-[min(78vw,420px)] shrink-0 flex-col justify-between self-center border-l border-bone/12 px-10"
+              >
+                <header className="flex items-start justify-between">
+                  <span className="label">{c.meta}</span>
+                  <Icon className="text-ash" size={20} strokeWidth={1} />
+                </header>
 
-          <div className="flex h-[62vh] w-[40vw] shrink-0 items-center">
-            <span className="text-display text-[clamp(2rem,6vw,5rem)] text-white/10">
-              → 540 KM
+                <div>
+                  <h3 className="text-display text-[clamp(1.7rem,3vw,2.4rem)] text-bone">
+                    {c.title}
+                  </h3>
+                  <p className="mt-6 max-w-[34ch] text-[15px] leading-relaxed text-ash">
+                    {c.body}
+                  </p>
+                </div>
+              </article>
+            )
+          })}
+
+          <div className="flex w-[36vw] shrink-0 items-center pl-16">
+            <span className="text-display text-[clamp(1.6rem,4vw,3.4rem)] text-bone/10">
+              540 KM
             </span>
           </div>
         </motion.div>
 
-        <div className="mt-10 px-5 md:px-9">
-          <div className="relative h-px w-full bg-white/12">
+        <div className="mt-16 px-6 md:px-10">
+          <div className="relative h-px w-full bg-bone/12">
             <motion.div
               style={{ scaleX: barScale }}
-              className="absolute inset-0 origin-left bg-acid"
+              className="absolute inset-0 origin-left bg-bone/60"
             />
           </div>
         </div>

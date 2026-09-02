@@ -85,13 +85,5 @@ export const tickerTop = [
   'ORBITAL',
 ]
 
-export const tickerBottom = [
-  'NO GROUND CONTROL',
-  'BUILT FOR VACUUM',
-  '540 KM',
-  'ALWAYS LISTENING',
-  'MACHINES THAT DREAM',
-]
-
 export const conceptCopy =
   'We build autonomous intelligence for the hardest environment there is. Two hundred kilograms of hardware, a vacuum, and a machine that decides for itself where to point.'

@@ -1,12 +1,11 @@
 import { useEffect, useRef } from 'react'
-import { pointerX, pointerY } from '../lib/pointer'
 
 type Star = { x: number; y: number; z: number; r: number; tw: number }
 
 /**
- * Hero star field. Depth-sorted parallax driven by both the pointer and the
- * scroll position. The rAF loop is suspended whenever the canvas leaves the
- * viewport so the rest of the page keeps the full frame budget.
+ * Hero star field. Parallax comes from scroll only — no pointer input — so the
+ * hero reads the same on camera as it does under a mouse. The rAF loop is
+ * suspended whenever the canvas leaves the viewport.
  */
 export function StarField({ className = '' }: { className?: string }) {
   const ref = useRef<HTMLCanvasElement>(null)
@@ -24,15 +23,14 @@ export function StarField({ className = '' }: { className?: string }) {
     let raf = 0
     let running = true
     let stars: Star[] = []
-    const comets: { x: number; y: number; len: number; sp: number }[] = []
 
     const seed = () => {
-      const count = Math.min(900, Math.round((width * height) / 1500))
+      const count = Math.min(620, Math.round((width * height) / 2400))
       stars = Array.from({ length: count }, () => ({
         x: Math.random() * width,
         y: Math.random() * height,
         z: Math.random() * 0.85 + 0.15,
-        r: Math.random() * 1.5 + 0.45,
+        r: Math.random() * 1.15 + 0.35,
         tw: Math.random() * Math.PI * 2,
       }))
     }
@@ -51,62 +49,20 @@ export function StarField({ className = '' }: { className?: string }) {
       raf = requestAnimationFrame(draw)
       if (!running) return
 
-      const px = (pointerX.get() / window.innerWidth - 0.5) * 2
-      const py = (pointerY.get() / window.innerHeight - 0.5) * 2
       const scroll = window.scrollY
-
       ctx.clearRect(0, 0, width, height)
+      ctx.fillStyle = '#ede9e1'
 
       for (const s of stars) {
         const depth = s.z
-        const ox = px * 34 * depth
-        const oy = py * 26 * depth + scroll * 0.22 * depth
-        let y = s.y - oy
-        // wrap vertically so the field never runs out while scrolling
+        let y = s.y - scroll * 0.2 * depth
         y = ((y % height) + height) % height
-        const x = s.x + ox
+        const twinkle = reduced ? 1 : 0.6 + Math.sin(t * 0.0011 + s.tw) * 0.4
 
-        const twinkle = reduced ? 1 : 0.55 + Math.sin(t * 0.0016 + s.tw) * 0.45
-        ctx.globalAlpha = (0.25 + depth * 0.75) * twinkle
-        ctx.fillStyle = depth > 0.93 ? '#c6ff3d' : '#ffffff'
+        ctx.globalAlpha = (0.12 + depth * 0.5) * twinkle
         ctx.beginPath()
-        ctx.arc(x, y, s.r * depth, 0, Math.PI * 2)
+        ctx.arc(s.x, y, s.r * depth, 0, Math.PI * 2)
         ctx.fill()
-
-        // A handful of foreground stars get a soft halo.
-        if (depth > 0.92) {
-          ctx.globalAlpha = 0.12 * twinkle
-          ctx.beginPath()
-          ctx.arc(x, y, s.r * 4.5, 0, Math.PI * 2)
-          ctx.fill()
-        }
-      }
-
-      if (!reduced) {
-        if (comets.length < 2 && Math.random() < 0.004) {
-          comets.push({
-            x: Math.random() * width * 0.6,
-            y: Math.random() * height * 0.5,
-            len: 120 + Math.random() * 200,
-            sp: 4 + Math.random() * 4,
-          })
-        }
-        ctx.globalAlpha = 0.75
-        for (let i = comets.length - 1; i >= 0; i--) {
-          const c = comets[i]
-          c.x += c.sp
-          c.y += c.sp * 0.42
-          const grad = ctx.createLinearGradient(c.x, c.y, c.x - c.len, c.y - c.len * 0.42)
-          grad.addColorStop(0, 'rgba(198,255,61,0.9)')
-          grad.addColorStop(1, 'rgba(198,255,61,0)')
-          ctx.strokeStyle = grad
-          ctx.lineWidth = 1.4
-          ctx.beginPath()
-          ctx.moveTo(c.x, c.y)
-          ctx.lineTo(c.x - c.len, c.y - c.len * 0.42)
-          ctx.stroke()
-          if (c.x - c.len > width || c.y - c.len > height) comets.splice(i, 1)
-        }
       }
 
       ctx.globalAlpha = 1

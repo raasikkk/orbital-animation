@@ -78,10 +78,6 @@ export const conceptPlates = [
     src: unsplash('1614728263952-84ea256f9679', 900),
     alt: 'Space shuttle lifting off through cloud',
   },
-  {
-    src: unsplash('1564053489984-317bbd824340', 800),
-    alt: 'Full disc of Earth from deep space',
-  },
 ]
 
 export const heroPlate = {
